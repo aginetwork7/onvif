@@ -186,20 +186,12 @@ type WSSSecurityHeader struct {
 }
 
 // NewWSSSecurityHeader creates WSSSecurityHeader instance
-func NewWSSSecurityHeader(user, pass string, created time.Time) *WSSSecurityHeader {
+func NewWSSSecurityHeader(user, pass string) *WSSSecurityHeader {
 	hdr := &WSSSecurityHeader{MustUnderstand: "1"}
 
 	// Username
 	hdr.UsernameToken.Username = user
-
-	// Created
-	// if created.Year() != 0 {
-	// 	hdr.UsernameToken.Created.Value = time.Now().UTC().Format(time.RFC3339Nano)
-	// 	//fmt.Println("------", hdr.UsernameToken.Created.Value, created.Nanosecond())
-
-	// } else {
 	hdr.UsernameToken.Created.Value = time.Now().UTC().Format(time.RFC3339Nano)
-	// }
 
 	// Nonce
 	b := make([]byte, 16)
@@ -393,7 +385,7 @@ func (s *Client) call(ctx context.Context, xaddr string, soapAction string, requ
 		req.SetBasicAuth(s.opts.auth.Login, s.opts.auth.Password)
 	}
 
-	req =req.WithContext(ctx)
+	req = req.WithContext(ctx)
 
 	req.Header.Add("Content-Type", "application/soap+xml; charset=utf-8; action=\""+soapAction+"\"")
 	req.Header.Add("Soapaction", "\""+soapAction+"\"")
